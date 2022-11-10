@@ -1,0 +1,2 @@
+/home/marc/open5gs/build/meson-private/cmake_libxml2/CMakeFiles/edit_cache.dir
+/home/marc/open5gs/build/meson-private/cmake_libxml2/CMakeFiles/rebuild_cache.dir

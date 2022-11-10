@@ -14,14 +14,15 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
+    
 test5gc_vonr_sources = files('''
-    abts-main.c
-    qos-flow-test.c
-    session-test.c
     simple-test.c
     af-test.c
     video-test.c
+    abts-main.c
+    qos-flow-test.c
+    session-test.c
+
 '''.split())
 
 test5gc_vonr_exe = executable('vonr',

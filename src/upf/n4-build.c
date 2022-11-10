@@ -21,7 +21,7 @@
 #include "n4-build.h"
 
 ogs_pkbuf_t *upf_n4_build_session_establishment_response(uint8_t type,
-    upf_sess_t *sess, ogs_pfcp_pdr_t *created_pdr[], int num_of_created_pdr)
+    upf_sess_t *sess, ogs_pfcp_pdr_t *created_pdr[], int num_of_created_pdr) /*Determines PFCP node ID and includes created PDRs in the response*/
 {
     ogs_pfcp_message_t pfcp_message;
     ogs_pfcp_session_establishment_response_t *rsp = NULL;
@@ -36,9 +36,9 @@ ogs_pkbuf_t *upf_n4_build_session_establishment_response(uint8_t type,
     ogs_debug("Session Establishment Response");
 
     rsp = &pfcp_message.pfcp_session_establishment_response;
-    memset(&pfcp_message, 0, sizeof(ogs_pfcp_message_t));
+    memset(&pfcp_message, 0, sizeof(ogs_pfcp_message_t)); //Empty pfcp message
 
-    /* Node ID */
+    /* Node ID */ /*Determines a PFCP node ID and includes it in the session establishment response*/
     ogs_pfcp_sockaddr_to_node_id(
             ogs_pfcp_self()->pfcp_addr, ogs_pfcp_self()->pfcp_addr6,
             ogs_app()->parameter.prefer_ipv4,
@@ -51,7 +51,7 @@ ogs_pkbuf_t *upf_n4_build_session_establishment_response(uint8_t type,
     rsp->cause.presence = 1;
     rsp->cause.u8 = OGS_PFCP_CAUSE_REQUEST_ACCEPTED;
 
-    /* F-SEID */
+    /* F-SEID */ /* Determines FSEID given IP addresses */
     ogs_pfcp_sockaddr_to_f_seid(
             ogs_pfcp_self()->pfcp_addr, ogs_pfcp_self()->pfcp_addr6,
             &f_seid, &len);
@@ -62,7 +62,7 @@ ogs_pkbuf_t *upf_n4_build_session_establishment_response(uint8_t type,
 
     ogs_pfcp_pdrbuf_init();
 
-    /* Created PDR */
+    /* Created PDR */ /* Created pdr will contain all the pdrs. Each created PDR in the response contains an FTEID (IP + teid) which identifies the logical tunnel */
     for (i = 0, j = 0; i < num_of_created_pdr; i++) {
         bool pdr_presence = ogs_pfcp_build_created_pdr(
                 &rsp->created_pdr[j], i, created_pdr[i]);
@@ -78,7 +78,7 @@ ogs_pkbuf_t *upf_n4_build_session_establishment_response(uint8_t type,
 }
 
 ogs_pkbuf_t *upf_n4_build_session_modification_response(uint8_t type,
-    upf_sess_t *sess, ogs_pfcp_pdr_t *created_pdr[], int num_of_created_pdr)
+    upf_sess_t *sess, ogs_pfcp_pdr_t *created_pdr[], int num_of_created_pdr) /* Now node id and FSEID are not included in the response. type example: OGS_PFCP_SESSION_MODIFICATION_RESPONSE_TYPE; */
 {
     ogs_pfcp_message_t pfcp_message;
     ogs_pfcp_session_modification_response_t *rsp = NULL;
@@ -113,7 +113,7 @@ ogs_pkbuf_t *upf_n4_build_session_modification_response(uint8_t type,
 }
 
 ogs_pkbuf_t *upf_n4_build_session_deletion_response(uint8_t type,
-        upf_sess_t *sess)
+        upf_sess_t *sess) /* Builds the session deletion response and includes the reports for each URR*/
 {
     ogs_pfcp_urr_t *urr = NULL;
     ogs_pfcp_user_plane_report_t report;

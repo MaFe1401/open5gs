@@ -30,7 +30,7 @@
 #include <netinet/ip6.h>
 #endif
 
-upf_sess_t *upf_sess_find_by_ue_ip_address(ogs_pkbuf_t *pkbuf)
+upf_sess_t *upf_sess_find_by_ue_ip_address(ogs_pkbuf_t *pkbuf) //Finds a session given a packet
 {
     upf_sess_t *sess = NULL;
 
@@ -46,10 +46,10 @@ upf_sess_t *upf_sess_find_by_ue_ip_address(ogs_pkbuf_t *pkbuf)
     ip_h = (struct ip *)pkbuf->data;
     if (ip_h->ip_v == 4) {
         ip_h = (struct ip *)pkbuf->data;
-        sess = upf_sess_find_by_ipv4(ip_h->ip_dst.s_addr);
+        sess = upf_sess_find_by_ipv4(ip_h->ip_dst.s_addr); //UE ip destination address is found in packet. Returns a session.
     } else if (ip_h->ip_v == 6) {
         ip6_h = (struct ip6_hdr *)pkbuf->data;
-        sess = upf_sess_find_by_ipv6((uint32_t *)ip6_h->ip6_dst.s6_addr);
+        sess = upf_sess_find_by_ipv6((uint32_t *)ip6_h->ip6_dst.s6_addr); //Same with IPv6
     } else {
         ogs_error("Invalid packet [IP version:%d, Packet Length:%d]",
                 ip_h->ip_v, pkbuf->len);

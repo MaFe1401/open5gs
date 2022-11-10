@@ -310,7 +310,10 @@ int ogs_app_context_parse_config(void)
                 } else if (!strcmp(parameter_key, "no_upf")) {
                     self.parameter.no_upf =
                         ogs_yaml_iter_bool(&parameter_iter);
-                } else if (!strcmp(parameter_key, "no_ausf")) {
+                }else if (!strcmp(parameter_key, "no_tsnaf")) {
+                    self.parameter.no_tsnaf =
+                        ogs_yaml_iter_bool(&parameter_iter);
+                }else if (!strcmp(parameter_key, "no_ausf")) {
                     self.parameter.no_ausf =
                         ogs_yaml_iter_bool(&parameter_iter);
                 } else if (!strcmp(parameter_key, "no_udm")) {

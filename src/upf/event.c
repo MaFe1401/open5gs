@@ -39,7 +39,7 @@ static void pollset_action_setup(void)
 
 static OGS_POOL(pool, upf_event_t);
 
-void upf_event_init(void)
+void upf_event_init(void) //Init upf event
 {
     ogs_pool_init(&pool, ogs_app()->pool.event);
 
@@ -54,22 +54,22 @@ void upf_event_init(void)
 #endif
 }
 
-void upf_event_term(void)
+void upf_event_term(void) //Terminate event queue
 {
     ogs_queue_term(ogs_app()->queue);
     ogs_pollset_notify(ogs_app()->pollset);
 }
 
-void upf_event_final(void)
+void upf_event_final(void) //Release resources
 {
     ogs_pool_final(&pool);
 }
 
-upf_event_t *upf_event_new(upf_event_e id)
+upf_event_t *upf_event_new(upf_event_e id) //Creates an event given an upf_event_e enum (message, timer, heartbeat...)
 {
     upf_event_t *e = NULL;
 
-    ogs_pool_alloc(&pool, &e);
+    ogs_pool_alloc(&pool, &e); //allocates memory to the new event
     ogs_assert(e);
     memset(e, 0, sizeof(*e));
 
@@ -78,13 +78,13 @@ upf_event_t *upf_event_new(upf_event_e id)
     return e;
 }
 
-void upf_event_free(upf_event_t *e)
+void upf_event_free(upf_event_t *e) //Releases resources allocated to event e
 {
     ogs_assert(e);
     ogs_pool_free(&pool, e);
 }
 
-const char *upf_event_get_name(upf_event_t *e)
+const char *upf_event_get_name(upf_event_t *e) //Returns the name of the given event
 {
     if (e == NULL)
         return OGS_FSM_NAME_INIT_SIG;

@@ -72,6 +72,10 @@ libtins_dep = dependency('libtins',
     version: ['>=3.4'],
     fallback: ['libtins', 'libtins_dep'])
 
+libulfius_dep = dependency('libulfius')
+
+#libxml_dep = dependency('libxml2-dev')
+
 libarp_nd = static_library('arp_nd',
     sources : files('''
       arp-nd.cpp
@@ -98,6 +102,8 @@ libupf_dep = declare_dependency(
         libpfcp_dep,
         libtun_dep,
         libarp_nd_dep,
+        libulfius_dep,
+        #libxml_dep,
     ])
 
 upf_sources = files('''

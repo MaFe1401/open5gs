@@ -56,10 +56,10 @@ int upf_initialize()
     rv = ogs_pfcp_ue_pool_generate();
     if (rv != OGS_OK) return rv;
 
-    rv = upf_pfcp_open();
+    rv = upf_pfcp_open();/* sets up pfcp server */
     if (rv != OGS_OK) return rv;
 
-    rv = upf_gtp_open();
+    rv = upf_gtp_open();/* sets up gtp server. Opens tun interface */
     if (rv != OGS_OK) return rv;
 
     thread = ogs_thread_create(upf_main, NULL);
@@ -97,7 +97,7 @@ static void upf_main(void *data)
     ogs_fsm_t upf_sm;
     int rv;
 
-    ogs_fsm_init(&upf_sm, upf_state_initial, upf_state_final, 0);
+    ogs_fsm_init(&upf_sm, upf_state_initial, upf_state_final, 0); /* initiates fsm */
 
     for ( ;; ) {
         ogs_pollset_poll(ogs_app()->pollset,
@@ -119,7 +119,7 @@ static void upf_main(void *data)
         for ( ;; ) {
             upf_event_t *e = NULL;
 
-            rv = ogs_queue_trypop(ogs_app()->queue, (void**)&e);
+            rv = ogs_queue_trypop(ogs_app()->queue, (void**)&e);/* retrieves next element from queue */
             ogs_assert(rv != OGS_ERROR);
 
             if (rv == OGS_DONE)

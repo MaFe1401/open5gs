@@ -37,7 +37,7 @@ subdir('pcrf')
 
 subdir('nrf')
 subdir('scp')
-
+subdir('tsnaf')
 subdir('udr')
 subdir('udm')
 subdir('pcf')

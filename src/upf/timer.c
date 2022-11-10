@@ -21,7 +21,7 @@
 #include "event.h"
 #include "context.h"
 
-const char *upf_timer_get_name(upf_timer_e id)
+const char *upf_timer_get_name(upf_timer_e id) //Returns timer name given an UPF timer enum
 {
     switch (id) {
     case UPF_TIMER_ASSOCIATION:
@@ -35,7 +35,7 @@ const char *upf_timer_get_name(upf_timer_e id)
     return "UNKNOWN_TIMER";
 }
 
-static void timer_send_event(int timer_id, void *data)
+static void timer_send_event(int timer_id, void *data) //Creates a new timer event and sends it to queue
 {
     int rv;
     upf_event_t *e = NULL;
@@ -52,12 +52,12 @@ static void timer_send_event(int timer_id, void *data)
     }
 }
 
-void upf_timer_association(void *data)
+void upf_timer_association(void *data) //Associates a timer to pfcp node
 {
     timer_send_event(UPF_TIMER_ASSOCIATION, data);
 }
 
-void upf_timer_no_heartbeat(void *data)
+void upf_timer_no_heartbeat(void *data) //Associates a timer of no heartbeat to pfcp node
 {
     timer_send_event(UPF_TIMER_NO_HEARTBEAT, data);
 }

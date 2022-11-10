@@ -27,14 +27,14 @@
 using namespace::Tins;
 
 
-uint8_t _serialize_reply(uint8_t *reply_data, EthernetII &reply)
+uint8_t _serialize_reply(uint8_t *reply_data, EthernetII &reply) //Serializes the PDU reply into a vector of bytes
 {
     PDU::serialization_type serialized = reply.serialize();
     memcpy(reply_data, serialized.data(), serialized.size());
     return serialized.size();
 }
 
-bool _parse_arp(EthernetII &pdu)
+bool _parse_arp(EthernetII &pdu) //Checks if the pdu is ARP 
 {
     if (pdu.payload_type() == ETHERTYPE_ARP) {
         const ARP& arp = pdu.rfind_pdu<ARP>();
@@ -43,14 +43,14 @@ bool _parse_arp(EthernetII &pdu)
     return false;
 }
 
-bool is_arp_req(uint8_t *data, uint len)
+bool is_arp_req(uint8_t *data, uint len) //Receives data and length, turns it into a PDU, checks if ARP.
 {
     EthernetII pdu(data, len);
     return _parse_arp(pdu);
 }
 
 uint8_t arp_reply(uint8_t *reply_data, uint8_t *request_data, uint len,
-        const uint8_t *mac)
+        const uint8_t *mac) //Receives data from request, turns it into pdu, checks if ARP, then makes an ARP reply with MAC and IP from sender/target if ARP.
 {
     EthernetII pdu(request_data, len);
     if (_parse_arp(pdu)) {
@@ -66,7 +66,7 @@ uint8_t arp_reply(uint8_t *reply_data, uint8_t *request_data, uint len,
     return 0;
 }
 
-bool _parse_nd(EthernetII &pdu)
+bool _parse_nd(EthernetII &pdu) //Returns true if the PDU is ICMPv6 neighbor solicitation
 {
     if (pdu.payload_type() == ETHERTYPE_IPV6) {
         const ICMPv6& icmp6 = pdu.rfind_pdu<ICMPv6>();
@@ -75,7 +75,7 @@ bool _parse_nd(EthernetII &pdu)
     return false;
 }
 
-bool is_nd_req(uint8_t *data, uint len)
+bool is_nd_req(uint8_t *data, uint len) //Checks if PDU is a request for ICMPv6 neighbor discovery
 {
     if (len < MAX_ND_SIZE) {
         EthernetII pdu(data, len);
@@ -85,7 +85,7 @@ bool is_nd_req(uint8_t *data, uint len)
 }
 
 uint8_t nd_reply(uint8_t *reply_data, uint8_t *request_data, uint len,
-        const uint8_t *mac)
+        const uint8_t *mac) //Checks request and builds ICMPv6 neighbor discovery reply if request data is ICMPv6 Neighbor discovery
 {
     EthernetII pdu(request_data, len);
     if (_parse_nd(pdu)) {

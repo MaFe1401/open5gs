@@ -57,43 +57,43 @@
 
 const uint8_t proxy_mac_addr[] = { 0x0e, 0x00, 0x00, 0x00, 0x00, 0x01 };
 
-static ogs_pkbuf_pool_t *packet_pool = NULL;
+static ogs_pkbuf_pool_t *packet_pool = NULL; 
 
 static void upf_gtp_handle_multicast(ogs_pkbuf_t *recvbuf);
-
+/* Determines the type of the packet: ARP, IP... IPvETHER_HDR_LEN = 14 Bytes */
 static uint16_t _get_eth_type(uint8_t *data, uint len) {
     if (len > ETHER_HDR_LEN) {
         struct ether_header *hdr = (struct ether_header*)data;
         return htobe16(hdr->ether_type);
     }
     return 0;
-}
-
+} 
+/* */
 static void _gtpv1_tun_recv_common_cb(
         short when, ogs_socket_t fd, bool has_eth, void *data)
 {
-    ogs_pkbuf_t *recvbuf = NULL;
+    ogs_pkbuf_t *recvbuf = NULL; /* Buffer for reading data */
 
-    upf_sess_t *sess = NULL;
-    ogs_pfcp_pdr_t *pdr = NULL;
+    upf_sess_t *sess = NULL; /* Session */
+    ogs_pfcp_pdr_t *pdr = NULL; /* Packet detection rules */
     ogs_pfcp_pdr_t *fallback_pdr = NULL;
     ogs_pfcp_far_t *far = NULL;
     ogs_pfcp_user_plane_report_t report;
     int i;
 
-    recvbuf = ogs_tun_read(fd, packet_pool);
+    recvbuf = ogs_tun_read(fd, packet_pool); /* Reads from tun interface */
     if (!recvbuf) {
         ogs_warn("ogs_tun_read() failed");
         return;
     }
 
-    if (has_eth) {
+    if (has_eth) { /* Ethertype is a field in the header which determines the protocol encapsulated in the payload */
         ogs_pkbuf_t *replybuf = NULL;
-        uint16_t eth_type = _get_eth_type(recvbuf->data, recvbuf->len);
+        uint16_t eth_type = _get_eth_type(recvbuf->data, recvbuf->len); /* Determines Ethertype given data and length */
         uint8_t size;
 
         if (eth_type == ETHERTYPE_ARP) {
-            if (is_arp_req(recvbuf->data, recvbuf->len)) {
+            if (is_arp_req(recvbuf->data, recvbuf->len)) {/* If packet is ARP request, sends ARP reply with MAC address */
                 replybuf = ogs_pkbuf_alloc(packet_pool, OGS_MAX_PKT_LEN);
                 ogs_assert(replybuf);
                 ogs_pkbuf_reserve(replybuf, OGS_TUN_MAX_HEADROOM);
@@ -106,7 +106,7 @@ static void _gtpv1_tun_recv_common_cb(
                 goto cleanup;
             }
         } else if (eth_type == ETHERTYPE_IPV6 &&
-                    is_nd_req(recvbuf->data, recvbuf->len)) {
+                    is_nd_req(recvbuf->data, recvbuf->len)) {/* If packet is ICMPv6, builds ICMPv6 neighbor discovery reply */
             replybuf = ogs_pkbuf_alloc(packet_pool, OGS_MAX_PKT_LEN);
             ogs_assert(replybuf);
             ogs_pkbuf_reserve(replybuf, OGS_TUN_MAX_HEADROOM);
@@ -117,7 +117,7 @@ static void _gtpv1_tun_recv_common_cb(
             ogs_info("[SEND] reply to ND solicit: %u", size);
         }
         if (replybuf) {
-            if (ogs_tun_write(fd, replybuf) != OGS_OK)
+            if (ogs_tun_write(fd, replybuf) != OGS_OK)/* Writes response given socket and reply buffer */
                 ogs_warn("ogs_tun_write() for reply failed");
             goto cleanup;
         }
@@ -129,7 +129,7 @@ static void _gtpv1_tun_recv_common_cb(
         ogs_pkbuf_pull(recvbuf, ETHER_HDR_LEN);
     }
 
-    sess = upf_sess_find_by_ue_ip_address(recvbuf);
+    sess = upf_sess_find_by_ue_ip_address(recvbuf);/* Determines session given the reception buffer */
     if (!sess)
         goto cleanup;
 
@@ -215,48 +215,48 @@ static void _gtpv1_u_recv_cb(short when, ogs_socket_t fd, void *data)
     ssize_t size;
     char buf[OGS_ADDRSTRLEN];
 
-    upf_sess_t *sess = NULL;
+    upf_sess_t *sess = NULL; /* session */
 
-    ogs_pkbuf_t *pkbuf = NULL;
+    ogs_pkbuf_t *pkbuf = NULL; /* buffer */
     ogs_sockaddr_t from;
 
-    ogs_gtp2_header_t *gtp_h = NULL;
-    ogs_pfcp_user_plane_report_t report;
+    ogs_gtp2_header_t *gtp_h = NULL; /* gtp header */
+    ogs_pfcp_user_plane_report_t report; /* pfcp user plane report */
 
     uint32_t teid;
     uint8_t qfi;
 
     ogs_assert(fd != INVALID_SOCKET);
 
-    pkbuf = ogs_pkbuf_alloc(packet_pool, OGS_MAX_PKT_LEN);
+    pkbuf = ogs_pkbuf_alloc(packet_pool, OGS_MAX_PKT_LEN); /* allocate memory to packet buffer */
     ogs_assert(pkbuf);
     ogs_pkbuf_reserve(pkbuf, OGS_TUN_MAX_HEADROOM);
     ogs_pkbuf_put(pkbuf, OGS_MAX_PKT_LEN-OGS_TUN_MAX_HEADROOM);
 
-    size = ogs_recvfrom(fd, pkbuf->data, pkbuf->len, 0, &from);
+    size = ogs_recvfrom(fd, pkbuf->data, pkbuf->len, 0, &from); /* size from packet buffer */
     if (size <= 0) {
         ogs_log_message(OGS_LOG_ERROR, ogs_socket_errno,
                 "ogs_recv() failed");
         goto cleanup;
     }
 
-    ogs_pkbuf_trim(pkbuf, size);
+    ogs_pkbuf_trim(pkbuf, size); /* trims size of read data from buffer */
 
     ogs_assert(pkbuf);
     ogs_assert(pkbuf->len);
 
-    gtp_h = (ogs_gtp2_header_t *)pkbuf->data;
+    gtp_h = (ogs_gtp2_header_t *)pkbuf->data; /* reads gtp header */
     if (gtp_h->version != OGS_GTP2_VERSION_1) {
         ogs_error("[DROP] Invalid GTPU version [%d]", gtp_h->version);
         ogs_log_hexdump(OGS_LOG_ERROR, pkbuf->data, pkbuf->len);
         goto cleanup;
     }
 
-    if (gtp_h->type == OGS_GTPU_MSGTYPE_ECHO_REQ) {
+    if (gtp_h->type == OGS_GTPU_MSGTYPE_ECHO_REQ) {/* gtp echo request */
         ogs_pkbuf_t *echo_rsp;
 
         ogs_debug("[RECV] Echo Request from [%s]", OGS_ADDR(&from, buf));
-        echo_rsp = ogs_gtp2_handle_echo_req(pkbuf);
+        echo_rsp = ogs_gtp2_handle_echo_req(pkbuf); 
         ogs_expect(echo_rsp);
         if (echo_rsp) {
             ssize_t sent;
@@ -264,7 +264,7 @@ static void _gtpv1_u_recv_cb(short when, ogs_socket_t fd, void *data)
             /* Echo reply */
             ogs_debug("[SEND] Echo Response to [%s]", OGS_ADDR(&from, buf));
 
-            sent = ogs_sendto(fd, echo_rsp->data, echo_rsp->len, 0, &from);
+            sent = ogs_sendto(fd, echo_rsp->data, echo_rsp->len, 0, &from);/* sends echo response */
             if (sent < 0 || sent != echo_rsp->len) {
                 ogs_log_message(OGS_LOG_ERROR, ogs_socket_errno,
                         "ogs_sendto() failed");
@@ -274,7 +274,7 @@ static void _gtpv1_u_recv_cb(short when, ogs_socket_t fd, void *data)
         goto cleanup;
     }
 
-    teid = be32toh(gtp_h->teid);
+    teid = be32toh(gtp_h->teid); /* encodes teid */
 
     ogs_debug("[RECV] GPU-U Type [%d] from [%s] : TEID[0x%x]",
             gtp_h->type, OGS_ADDR(&from, buf), teid);
@@ -290,7 +290,7 @@ static void _gtpv1_u_recv_cb(short when, ogs_socket_t fd, void *data)
          *          Session Container should be the first Extension Header
          */
         ogs_gtp2_extension_header_t *extension_header =
-            (ogs_gtp2_extension_header_t *)(pkbuf->data+OGS_GTPV1U_HEADER_LEN);
+            (ogs_gtp2_extension_header_t *)(pkbuf->data+OGS_GTPV1U_HEADER_LEN); /* reads gtp extensions headers */
         ogs_assert(extension_header);
         if (extension_header->type ==
                 OGS_GTP2_EXTENSION_HEADER_TYPE_PDU_SESSION_CONTAINER) {
@@ -304,7 +304,7 @@ static void _gtpv1_u_recv_cb(short when, ogs_socket_t fd, void *data)
     }
 
     /* Remove GTP header and send packets to TUN interface */
-    len = ogs_gtpu_header_len(pkbuf);
+    len = ogs_gtpu_header_len(pkbuf); /* determines header length */
     if (len < 0) {
         ogs_error("[DROP] Cannot decode GTPU packet");
         ogs_log_hexdump(OGS_LOG_ERROR, pkbuf->data, pkbuf->len);
@@ -324,7 +324,7 @@ static void _gtpv1_u_recv_cb(short when, ogs_socket_t fd, void *data)
     } else if (gtp_h->type == OGS_GTPU_MSGTYPE_ERR_IND) {
         ogs_pfcp_far_t *far = NULL;
 
-        far = ogs_pfcp_far_find_by_error_indication(pkbuf);
+        far = ogs_pfcp_far_find_by_error_indication(pkbuf); /* FAR will provide information on how a particular packet should be handled (forward, duplicate, drop or buffer). */
         if (far) {
             ogs_assert(true ==
                 ogs_pfcp_up_handle_error_indication(far, &report));
@@ -345,21 +345,21 @@ static void _gtpv1_u_recv_cb(short when, ogs_socket_t fd, void *data)
 
     } else if (gtp_h->type == OGS_GTPU_MSGTYPE_GPDU) {
         uint16_t eth_type = 0;
-        struct ip *ip_h = NULL;
-        uint32_t *src_addr = NULL;
+        struct ip *ip_h = NULL; /* ip header */
+        uint32_t *src_addr = NULL; /* source ip address */
         ogs_pfcp_object_t *pfcp_object = NULL;
-        ogs_pfcp_sess_t *pfcp_sess = NULL;
-        ogs_pfcp_pdr_t *pdr = NULL;
-        ogs_pfcp_far_t *far = NULL;
+        ogs_pfcp_sess_t *pfcp_sess = NULL; /* pfcp session */
+        ogs_pfcp_pdr_t *pdr = NULL; /* Packet Detection Rules */
+        ogs_pfcp_far_t *far = NULL; /* Forwarding Action Rules */
 
         ogs_pfcp_subnet_t *subnet = NULL;
         ogs_pfcp_dev_t *dev = NULL;
         int i;
 
-        ip_h = (struct ip *)pkbuf->data;
+        ip_h = (struct ip *)pkbuf->data; /* Reads ip header */
         ogs_assert(ip_h);
 
-        pfcp_object = ogs_pfcp_object_find_by_teid(teid);
+        pfcp_object = ogs_pfcp_object_find_by_teid(teid); 
         if (!pfcp_object) {
             /* TODO : Send Error Indication */
             goto cleanup;
@@ -367,10 +367,10 @@ static void _gtpv1_u_recv_cb(short when, ogs_socket_t fd, void *data)
 
         switch(pfcp_object->type) {
         case OGS_PFCP_OBJ_PDR_TYPE:
-            pdr = (ogs_pfcp_pdr_t *)pfcp_object;
+            pdr = (ogs_pfcp_pdr_t *)pfcp_object; /* Gets PDR */
             ogs_assert(pdr);
             break;
-        case OGS_PFCP_OBJ_SESS_TYPE:
+        case OGS_PFCP_OBJ_SESS_TYPE: /* Gets pfcp session */
             pfcp_sess = (ogs_pfcp_sess_t *)pfcp_object;
             ogs_assert(pfcp_sess);
 
@@ -419,7 +419,7 @@ static void _gtpv1_u_recv_cb(short when, ogs_socket_t fd, void *data)
         ogs_assert(far);
 
         if (ip_h->ip_v == 4 && sess->ipv4) {
-            src_addr = &ip_h->ip_src.s_addr;
+            src_addr = &ip_h->ip_src.s_addr;/* Determines source ip address */
             ogs_assert(src_addr);
 
             /*
@@ -615,7 +615,7 @@ cleanup:
     ogs_pkbuf_free(pkbuf);
 }
 
-int upf_gtp_init(void)
+int upf_gtp_init(void) 
 {
     ogs_pkbuf_config_t config;
     memset(&config, 0, sizeof config);
@@ -634,21 +634,21 @@ int upf_gtp_init(void)
     return OGS_OK;
 }
 
-void upf_gtp_final(void)
+void upf_gtp_final(void) /*Deletes allocation for gtp */
 {
     ogs_pkbuf_pool_destroy(packet_pool);
 }
 
-static void _get_dev_mac_addr(char *ifname, uint8_t *mac_addr)
+static void _get_dev_mac_addr(char *ifname, uint8_t *mac_addr) 
 {
 #ifdef SIOCGIFHWADDR
-    int fd = socket(PF_INET, SOCK_DGRAM, 0);
+    int fd = socket(PF_INET, SOCK_DGRAM, 0);/* Creates socket */
     ogs_assert(fd);
     struct ifreq req;
     memset(&req, 0, sizeof(req));
-    strncpy(req.ifr_name, ifname, IF_NAMESIZE-1);
+    strncpy(req.ifr_name, ifname, IF_NAMESIZE-1); /* Copies 15 characters from ifname to req.ifr_name */
     ogs_assert(ioctl(fd, SIOCGIFHWADDR, &req) == 0);
-    memcpy(mac_addr, req.ifr_hwaddr.sa_data, ETHER_ADDR_LEN);
+    memcpy(mac_addr, req.ifr_hwaddr.sa_data, ETHER_ADDR_LEN); /* Copies 6 octets = 6 bytes from req.ifr_hwaddr.sa_data to mac_addr */
 #else
     struct ifaddrs *ifap;
     ogs_assert(getifaddrs(&ifap) == 0);
@@ -673,7 +673,7 @@ int upf_gtp_open(void)
     ogs_sock_t *sock = NULL;
     int rc;
 
-    ogs_list_for_each(&ogs_gtp_self()->gtpu_list, node) {
+    ogs_list_for_each(&ogs_gtp_self()->gtpu_list, node) {/* Starts socket for each gtp node */
         sock = ogs_gtp_server(node);
         if (!sock) return OGS_ERROR;
 
@@ -746,7 +746,7 @@ int upf_gtp_open(void)
     return OGS_OK;
 }
 
-void upf_gtp_close(void)
+void upf_gtp_close(void)/* Removes poll allocation */
 {
     ogs_pfcp_dev_t *dev = NULL;
 

@@ -23,7 +23,7 @@
 #include "n4-handler.h"
 
 static void upf_n4_handle_create_urr(upf_sess_t *sess, ogs_pfcp_tlv_create_urr_t *create_urr_arr,
-                              uint8_t *cause_value, uint8_t *offending_ie_value)
+                              uint8_t *cause_value, uint8_t *offending_ie_value)/* creates usage reporting rules */
 {
     int i;
     ogs_pfcp_urr_t *urr;
@@ -45,11 +45,11 @@ static void upf_n4_handle_create_urr(upf_sess_t *sess, ogs_pfcp_tlv_create_urr_t
 
 void upf_n4_handle_session_establishment_request(
         upf_sess_t *sess, ogs_pfcp_xact_t *xact,
-        ogs_pfcp_session_establishment_request_t *req)
+        ogs_pfcp_session_establishment_request_t *req)/* session establishment request by SMF */
 {
-    ogs_pfcp_pdr_t *pdr = NULL;
-    ogs_pfcp_far_t *far = NULL;
-    ogs_pfcp_pdr_t *created_pdr[OGS_MAX_NUM_OF_PDR];
+    ogs_pfcp_pdr_t *pdr = NULL;/* packet detection rules */
+    ogs_pfcp_far_t *far = NULL;/*forwarding action rules */
+    ogs_pfcp_pdr_t *created_pdr[OGS_MAX_NUM_OF_PDR];/* pdr array */
     int num_of_created_pdr = 0;
     uint8_t cause_value = 0;
     uint8_t offending_ie_value = 0;
@@ -69,7 +69,7 @@ void upf_n4_handle_session_establishment_request(
                 OGS_PFCP_CAUSE_MANDATORY_IE_MISSING, 0);
         return;
     }
-
+    /* pdr creation */
     for (i = 0; i < OGS_MAX_NUM_OF_PDR; i++) {
         created_pdr[i] = ogs_pfcp_handle_create_pdr(&sess->pfcp,
                 &req->create_pdr[i], &cause_value, &offending_ie_value);
@@ -79,7 +79,7 @@ void upf_n4_handle_session_establishment_request(
     num_of_created_pdr = i;
     if (cause_value != OGS_PFCP_CAUSE_REQUEST_ACCEPTED)
         goto cleanup;
-
+    /* FAR creation */
     for (i = 0; i < OGS_MAX_NUM_OF_FAR; i++) {
         if (ogs_pfcp_handle_create_far(&sess->pfcp, &req->create_far[i],
                     &cause_value, &offending_ie_value) == NULL)
@@ -87,11 +87,11 @@ void upf_n4_handle_session_establishment_request(
     }
     if (cause_value != OGS_PFCP_CAUSE_REQUEST_ACCEPTED)
         goto cleanup;
-
+    /* URR creation */
     upf_n4_handle_create_urr(sess, &req->create_urr[0], &cause_value, &offending_ie_value);
     if (cause_value != OGS_PFCP_CAUSE_REQUEST_ACCEPTED)
         goto cleanup;
-
+    /* QER creation */
     for (i = 0; i < OGS_MAX_NUM_OF_QER; i++) {
         if (ogs_pfcp_handle_create_qer(&sess->pfcp, &req->create_qer[i],
                     &cause_value, &offending_ie_value) == NULL)
@@ -99,7 +99,7 @@ void upf_n4_handle_session_establishment_request(
     }
     if (cause_value != OGS_PFCP_CAUSE_REQUEST_ACCEPTED)
         goto cleanup;
-
+    /* BAR creation */
     ogs_pfcp_handle_create_bar(&sess->pfcp, &req->create_bar,
                 &cause_value, &offending_ie_value);
     if (cause_value != OGS_PFCP_CAUSE_REQUEST_ACCEPTED)
@@ -198,7 +198,7 @@ void upf_n4_handle_session_establishment_request(
 
     ogs_assert(OGS_OK ==
         upf_pfcp_send_session_establishment_response(
-            xact, sess, created_pdr, num_of_created_pdr));
+            xact, sess, created_pdr, num_of_created_pdr));/* sends session establishment response */
     return;
 
 cleanup:
@@ -210,7 +210,7 @@ cleanup:
 
 void upf_n4_handle_session_modification_request(
         upf_sess_t *sess, ogs_pfcp_xact_t *xact,
-        ogs_pfcp_session_modification_request_t *req)
+        ogs_pfcp_session_modification_request_t *req)/* session modification request */
 {
     ogs_pfcp_pdr_t *pdr = NULL;
     ogs_pfcp_far_t *far = NULL;
@@ -234,7 +234,7 @@ void upf_n4_handle_session_modification_request(
                 OGS_PFCP_CAUSE_SESSION_CONTEXT_NOT_FOUND, 0);
         return;
     }
-
+    /* creates new pdrs */
     for (i = 0; i < OGS_MAX_NUM_OF_PDR; i++) {
         created_pdr[i] = ogs_pfcp_handle_create_pdr(&sess->pfcp,
                 &req->create_pdr[i], &cause_value, &offending_ie_value);
@@ -244,7 +244,7 @@ void upf_n4_handle_session_modification_request(
     num_of_created_pdr = i;
     if (cause_value != OGS_PFCP_CAUSE_REQUEST_ACCEPTED)
         goto cleanup;
-
+    /* updates existing pdrs */
     for (i = 0; i < OGS_MAX_NUM_OF_PDR; i++) {
         if (ogs_pfcp_handle_update_pdr(&sess->pfcp, &req->update_pdr[i],
                     &cause_value, &offending_ie_value) == NULL)
@@ -252,7 +252,7 @@ void upf_n4_handle_session_modification_request(
     }
     if (cause_value != OGS_PFCP_CAUSE_REQUEST_ACCEPTED)
         goto cleanup;
-
+    /* removes selected pdrs */
     for (i = 0; i < OGS_MAX_NUM_OF_PDR; i++) {
         if (ogs_pfcp_handle_remove_pdr(&sess->pfcp, &req->remove_pdr[i],
                 &cause_value, &offending_ie_value) == false)
@@ -260,7 +260,7 @@ void upf_n4_handle_session_modification_request(
     }
     if (cause_value != OGS_PFCP_CAUSE_REQUEST_ACCEPTED)
         goto cleanup;
-
+    /* creates new fars */
     for (i = 0; i < OGS_MAX_NUM_OF_FAR; i++) {
         if (ogs_pfcp_handle_create_far(&sess->pfcp, &req->create_far[i],
                     &cause_value, &offending_ie_value) == NULL)
@@ -268,7 +268,7 @@ void upf_n4_handle_session_modification_request(
     }
     if (cause_value != OGS_PFCP_CAUSE_REQUEST_ACCEPTED)
         goto cleanup;
-
+    /* updates existing far flags */
     for (i = 0; i < OGS_MAX_NUM_OF_FAR; i++) {
         if (ogs_pfcp_handle_update_far_flags(&sess->pfcp, &req->update_far[i],
                     &cause_value, &offending_ie_value) == NULL)
@@ -288,7 +288,7 @@ void upf_n4_handle_session_modification_request(
     /* Clear PFCPSMReq-Flags */
     ogs_list_for_each(&sess->pfcp.far_list, far)
         far->smreq_flags.value = 0;
-
+    /* updates fars */
     for (i = 0; i < OGS_MAX_NUM_OF_FAR; i++) {
         if (ogs_pfcp_handle_update_far(&sess->pfcp, &req->update_far[i],
                     &cause_value, &offending_ie_value) == NULL)
@@ -296,7 +296,7 @@ void upf_n4_handle_session_modification_request(
     }
     if (cause_value != OGS_PFCP_CAUSE_REQUEST_ACCEPTED)
         goto cleanup;
-
+    /* removes selected fars */
     for (i = 0; i < OGS_MAX_NUM_OF_FAR; i++) {
         if (ogs_pfcp_handle_remove_far(&sess->pfcp, &req->remove_far[i],
                 &cause_value, &offending_ie_value) == false)
@@ -304,11 +304,11 @@ void upf_n4_handle_session_modification_request(
     }
     if (cause_value != OGS_PFCP_CAUSE_REQUEST_ACCEPTED)
         goto cleanup;
-
+    /* creates new urr */
     upf_n4_handle_create_urr(sess, &req->create_urr[0], &cause_value, &offending_ie_value);
     if (cause_value != OGS_PFCP_CAUSE_REQUEST_ACCEPTED)
         goto cleanup;
-
+    /* updates urr */
     for (i = 0; i < OGS_MAX_NUM_OF_URR; i++) {
         if (ogs_pfcp_handle_update_urr(&sess->pfcp, &req->update_urr[i],
                     &cause_value, &offending_ie_value) == NULL)
@@ -316,7 +316,7 @@ void upf_n4_handle_session_modification_request(
     }
     if (cause_value != OGS_PFCP_CAUSE_REQUEST_ACCEPTED)
         goto cleanup;
-
+    /* removes selected urr */
     for (i = 0; i < OGS_MAX_NUM_OF_URR; i++) {
         if (ogs_pfcp_handle_remove_urr(&sess->pfcp, &req->remove_urr[i],
                 &cause_value, &offending_ie_value) == false)
@@ -324,7 +324,7 @@ void upf_n4_handle_session_modification_request(
     }
     if (cause_value != OGS_PFCP_CAUSE_REQUEST_ACCEPTED)
         goto cleanup;
-
+    /* creates new QERs */
     for (i = 0; i < OGS_MAX_NUM_OF_QER; i++) {
         if (ogs_pfcp_handle_create_qer(&sess->pfcp, &req->create_qer[i],
                     &cause_value, &offending_ie_value) == NULL)
@@ -332,7 +332,7 @@ void upf_n4_handle_session_modification_request(
     }
     if (cause_value != OGS_PFCP_CAUSE_REQUEST_ACCEPTED)
         goto cleanup;
-
+    /* updates selected QERs */
     for (i = 0; i < OGS_MAX_NUM_OF_QER; i++) {
         if (ogs_pfcp_handle_update_qer(&sess->pfcp, &req->update_qer[i],
                     &cause_value, &offending_ie_value) == NULL)
@@ -340,7 +340,7 @@ void upf_n4_handle_session_modification_request(
     }
     if (cause_value != OGS_PFCP_CAUSE_REQUEST_ACCEPTED)
         goto cleanup;
-
+    /* removes selected QERs */
     for (i = 0; i < OGS_MAX_NUM_OF_QER; i++) {
         if (ogs_pfcp_handle_remove_qer(&sess->pfcp, &req->remove_qer[i],
                 &cause_value, &offending_ie_value) == false)
@@ -348,12 +348,12 @@ void upf_n4_handle_session_modification_request(
     }
     if (cause_value != OGS_PFCP_CAUSE_REQUEST_ACCEPTED)
         goto cleanup;
-
+    /* Creates BAR */
     ogs_pfcp_handle_create_bar(&sess->pfcp, &req->create_bar,
                 &cause_value, &offending_ie_value);
     if (cause_value != OGS_PFCP_CAUSE_REQUEST_ACCEPTED)
         goto cleanup;
-
+    /* removes selected BAR */
     ogs_pfcp_handle_remove_bar(&sess->pfcp, &req->remove_bar,
             &cause_value, &offending_ie_value);
     if (cause_value != OGS_PFCP_CAUSE_REQUEST_ACCEPTED)
@@ -381,7 +381,7 @@ void upf_n4_handle_session_modification_request(
 
                 if (pdr->f_teid.chid) {
                     choosed_pdr = ogs_pfcp_pdr_find_by_choose_id(
-                            &sess->pfcp, pdr->f_teid.choose_id);
+                            &sess->pfcp, pdr->f_teid.choose_id);/* chooses pdr */
                     if (!choosed_pdr) {
                         pdr->chid = true;
                         pdr->choose_id = pdr->f_teid.choose_id;
@@ -453,7 +453,7 @@ cleanup:
 
 void upf_n4_handle_session_deletion_request(
         upf_sess_t *sess, ogs_pfcp_xact_t *xact,
-        ogs_pfcp_session_deletion_request_t *req)
+        ogs_pfcp_session_deletion_request_t *req) /* session deletion */
 {
     ogs_assert(xact);
     ogs_assert(req);
@@ -473,7 +473,7 @@ void upf_n4_handle_session_deletion_request(
 
 void upf_n4_handle_session_report_response(
         upf_sess_t *sess, ogs_pfcp_xact_t *xact,
-        ogs_pfcp_session_report_response_t *rsp)
+        ogs_pfcp_session_report_response_t *rsp)/* session report */
 {
     uint8_t cause_value = 0;
 

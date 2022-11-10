@@ -56,7 +56,7 @@ typedef struct ogs_app_context_s {
         int no_sgwu;
         int no_pgw;
         int no_pcrf;
-
+        int no_tsnaf;
         int no_amf;
         int no_smf;
         int no_upf;

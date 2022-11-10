@@ -23,7 +23,8 @@
 #include "pfcp-path.h"
 #include "gtp-path.h"
 
-void upf_state_initial(ogs_fsm_t *s, upf_event_t *e)
+/* Finite State Machine */
+void upf_state_initial(ogs_fsm_t *s, upf_event_t *e) /* Transitions to operational */
 {
     upf_sm_debug(e);
 
@@ -32,55 +33,55 @@ void upf_state_initial(ogs_fsm_t *s, upf_event_t *e)
     OGS_FSM_TRAN(s, &upf_state_operational);
 }
 
-void upf_state_final(ogs_fsm_t *s, upf_event_t *e)
+void upf_state_final(ogs_fsm_t *s, upf_event_t *e) /* final */
 {
     upf_sm_debug(e);
 
     ogs_assert(s);
 }
 
-void upf_state_operational(ogs_fsm_t *s, upf_event_t *e)
+void upf_state_operational(ogs_fsm_t *s, upf_event_t *e) /* Arguments: A state and an event */
 {
     int rv;
-    ogs_pkbuf_t *recvbuf = NULL;
+    ogs_pkbuf_t *recvbuf = NULL; /* Reception buffer */
 
-    ogs_pfcp_message_t pfcp_message;
-    ogs_pfcp_node_t *node = NULL;
-    ogs_pfcp_xact_t *xact = NULL;
+    ogs_pfcp_message_t pfcp_message; /* PFCP message */
+    ogs_pfcp_node_t *node = NULL; /* PFCP node */
+    ogs_pfcp_xact_t *xact = NULL; /* PFCP transaction */
 
     upf_sm_debug(e);
 
     ogs_assert(s);
 
-    switch (e->id) {
+    switch (e->id) {/* Reads event id */
     case OGS_FSM_ENTRY_SIG:
         break;
 
     case OGS_FSM_EXIT_SIG:
         break;
 
-    case UPF_EVT_N4_MESSAGE:
+    case UPF_EVT_N4_MESSAGE:/* In case event is N4 message */
         ogs_assert(e);
-        recvbuf = e->pkbuf;
+        recvbuf = e->pkbuf;/* receives buffer from event */
         ogs_assert(recvbuf);
-        node = e->pfcp_node;
+        node = e->pfcp_node;/* Reads pfcp node */
         ogs_assert(node);
 
-        if (ogs_pfcp_parse_msg(&pfcp_message, recvbuf) != OGS_OK) {
+        if (ogs_pfcp_parse_msg(&pfcp_message, recvbuf) != OGS_OK) {/* Parses PFCP message */
             ogs_error("ogs_pfcp_parse_msg() failed");
             ogs_pkbuf_free(recvbuf);
             break;
         }
 
-        rv = ogs_pfcp_xact_receive(node, &pfcp_message.h, &xact);
+        rv = ogs_pfcp_xact_receive(node, &pfcp_message.h, &xact); /* Receives transaction */
         if (rv != OGS_OK) {
             ogs_pkbuf_free(recvbuf);
             break;
         }
 
-        e->pfcp_message = &pfcp_message;
-        e->pfcp_xact = xact;
-        ogs_fsm_dispatch(&node->sm, e);
+        e->pfcp_message = &pfcp_message; /* Assigns pfcp message */
+        e->pfcp_xact = xact; /* Assigns pfcp transaction to event */
+        ogs_fsm_dispatch(&node->sm, e); /* Changes state */
         if (OGS_FSM_CHECK(&node->sm, upf_pfcp_state_exception)) {
             ogs_error("PFCP state machine exception");
             break;
@@ -89,7 +90,7 @@ void upf_state_operational(ogs_fsm_t *s, upf_event_t *e)
         ogs_pkbuf_free(recvbuf);
         break;
     case UPF_EVT_N4_TIMER:
-    case UPF_EVT_N4_NO_HEARTBEAT:
+    case UPF_EVT_N4_NO_HEARTBEAT: /* In case event is N4 heartbeat */
         node = e->pfcp_node;
         ogs_assert(node);
         ogs_assert(OGS_FSM_STATE(&node->sm));

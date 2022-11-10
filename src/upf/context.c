@@ -32,7 +32,7 @@ static void upf_sess_urr_acc_remove_all(upf_sess_t *sess);
 
 void upf_context_init(void)
 {
-    ogs_assert(context_initialized == 0);
+    ogs_assert(context_initialized == 0); 
 
     /* Initialize UPF context */
     memset(&self, 0, sizeof(upf_context_t));
@@ -43,12 +43,13 @@ void upf_context_init(void)
     ogs_pfcp_self()->up_function_features.ftup = 1;
     ogs_pfcp_self()->up_function_features.empu = 1;
     ogs_pfcp_self()->up_function_features.mnop = 1;
-    ogs_pfcp_self()->up_function_features.vtime = 1;
+    ogs_pfcp_self()->up_function_features.vtime = 1; 
     ogs_pfcp_self()->up_function_features_len = 4;
 
     ogs_list_init(&self.sess_list);
     ogs_pool_init(&upf_sess_pool, ogs_app()->pool.sess);
 
+    //Hash creation
     self.seid_hash = ogs_hash_make();
     ogs_assert(self.seid_hash);
     self.f_seid_hash = ogs_hash_make();
@@ -61,7 +62,7 @@ void upf_context_init(void)
     context_initialized = 1;
 }
 
-void upf_context_final(void)
+void upf_context_final(void) //Remove session, hashes...
 {
     ogs_assert(context_initialized == 1);
 
@@ -91,7 +92,7 @@ static int upf_context_prepare(void)
     return OGS_OK;
 }
 
-static int upf_context_validation(void)
+static int upf_context_validation(void) //Checks if context and UE subnet list is not null
 {
     if (ogs_list_first(&ogs_gtp_self()->gtpu_list) == NULL) {
         ogs_error("No upf.gtpu in '%s'", ogs_app()->file);
@@ -104,7 +105,7 @@ static int upf_context_validation(void)
     return OGS_OK;
 }
 
-int upf_context_parse_config(void)
+int upf_context_parse_config(void) //Handles yaml config file
 {
     int rv;
     yaml_document_t *document = NULL;
@@ -144,7 +145,7 @@ int upf_context_parse_config(void)
     return OGS_OK;
 }
 
-upf_sess_t *upf_sess_add(ogs_pfcp_f_seid_t *cp_f_seid)
+upf_sess_t *upf_sess_add(ogs_pfcp_f_seid_t *cp_f_seid) //Initiates a session given a SEID (which identifies a PFCP session).
 {
     upf_sess_t *sess = NULL;
 
@@ -181,7 +182,7 @@ upf_sess_t *upf_sess_add(ogs_pfcp_f_seid_t *cp_f_seid)
     return sess;
 }
 
-int upf_sess_remove(upf_sess_t *sess)
+int upf_sess_remove(upf_sess_t *sess) //Removes PFCP session. Sets IPs free.
 {
     ogs_assert(sess);
 
@@ -215,7 +216,7 @@ int upf_sess_remove(upf_sess_t *sess)
     return OGS_OK;
 }
 
-void upf_sess_remove_all(void)
+void upf_sess_remove_all(void) //Removes all PFCP sessions
 {
     upf_sess_t *sess = NULL, *next = NULL;;
 
@@ -224,17 +225,17 @@ void upf_sess_remove_all(void)
     }
 }
 
-upf_sess_t *upf_sess_find(uint32_t index)
+upf_sess_t *upf_sess_find(uint32_t index)//Finds a PFCP session given an index
 {
     return ogs_pool_find(&upf_sess_pool, index);
 }
 
-upf_sess_t *upf_sess_find_by_smf_n4_seid(uint64_t seid)
+upf_sess_t *upf_sess_find_by_smf_n4_seid(uint64_t seid) //Finds PFCP session by SMF SEID
 {
     return (upf_sess_t *)ogs_hash_get(self.seid_hash, &seid, sizeof(seid));
 }
 
-upf_sess_t *upf_sess_find_by_smf_n4_f_seid(ogs_pfcp_f_seid_t *f_seid)
+upf_sess_t *upf_sess_find_by_smf_n4_f_seid(ogs_pfcp_f_seid_t *f_seid) //Finds PFCP session by SMF FSEID
 {
     struct {
         uint64_t seid;
@@ -248,18 +249,18 @@ upf_sess_t *upf_sess_find_by_smf_n4_f_seid(ogs_pfcp_f_seid_t *f_seid)
     return (upf_sess_t *)ogs_hash_get(self.f_seid_hash, &key, sizeof(key));
 }
 
-upf_sess_t *upf_sess_find_by_upf_n4_seid(uint64_t seid)
+upf_sess_t *upf_sess_find_by_upf_n4_seid(uint64_t seid) //Finds PFCP session by UPF SEID
 {
     return upf_sess_find(seid);
 }
 
-upf_sess_t *upf_sess_find_by_ipv4(uint32_t addr)
+upf_sess_t *upf_sess_find_by_ipv4(uint32_t addr) //Finds PFCP session by IPv4
 {
     ogs_assert(self.ipv4_hash);
     return (upf_sess_t *)ogs_hash_get(self.ipv4_hash, &addr, OGS_IPV4_LEN);
 }
 
-upf_sess_t *upf_sess_find_by_ipv6(uint32_t *addr6)
+upf_sess_t *upf_sess_find_by_ipv6(uint32_t *addr6) //Finds PFCP session by IPv6
 {
     ogs_assert(self.ipv6_hash);
     ogs_assert(addr6);
@@ -267,7 +268,7 @@ upf_sess_t *upf_sess_find_by_ipv6(uint32_t *addr6)
             self.ipv6_hash, addr6, OGS_IPV6_DEFAULT_PREFIX_LEN >> 3);
 }
 
-upf_sess_t *upf_sess_add_by_message(ogs_pfcp_message_t *message)
+upf_sess_t *upf_sess_add_by_message(ogs_pfcp_message_t *message) //Extracts SMF FSEID from message given containing PFCP session establishment request and creates PFCP session
 {
     upf_sess_t *sess = NULL;
     ogs_pfcp_f_seid_t *f_seid = NULL;
@@ -293,9 +294,9 @@ upf_sess_t *upf_sess_add_by_message(ogs_pfcp_message_t *message)
 }
 
 uint8_t upf_sess_set_ue_ip(upf_sess_t *sess,
-        uint8_t session_type, ogs_pfcp_pdr_t *pdr)
+        uint8_t session_type, ogs_pfcp_pdr_t *pdr) //
 {
-    ogs_pfcp_ue_ip_addr_t *ue_ip = NULL;
+    ogs_pfcp_ue_ip_addr_t *ue_ip = NULL;//Empty UE IP address
     char buf1[OGS_ADDRSTRLEN];
     char buf2[OGS_ADDRSTRLEN];
 
@@ -305,14 +306,15 @@ uint8_t upf_sess_set_ue_ip(upf_sess_t *sess,
     ogs_assert(session_type);
     ogs_assert(pdr);
     ogs_assert(pdr->ue_ip_addr_len);
-    ue_ip = &pdr->ue_ip_addr;
+    ue_ip = &pdr->ue_ip_addr; //Get UE IP address from given Packet Detection Rules
     ogs_assert(ue_ip);
 
-    if (sess->ipv4) {
+    //Set free IP addresses if exist
+    if (sess->ipv4) { 
         ogs_hash_set(self.ipv4_hash,
                 sess->ipv4->addr, OGS_IPV4_LEN, NULL);
         ogs_pfcp_ue_ip_free(sess->ipv4);
-    }
+    } 
     if (sess->ipv6) {
         ogs_hash_set(self.ipv6_hash,
                 sess->ipv6->addr, OGS_IPV6_DEFAULT_PREFIX_LEN >> 3, NULL);
@@ -323,7 +325,7 @@ uint8_t upf_sess_set_ue_ip(upf_sess_t *sess,
     if (session_type == OGS_PDU_SESSION_TYPE_IPV4) {
         if (ue_ip->ipv4 || pdr->dnn) {
             sess->ipv4 = ogs_pfcp_ue_ip_alloc(&cause_value, AF_INET,
-                            pdr->dnn, (uint8_t *)&(ue_ip->addr));
+                            pdr->dnn, (uint8_t *)&(ue_ip->addr)); //Assign IP using UE IP
             if (!sess->ipv4) {
                 ogs_error("ogs_pfcp_ue_ip_alloc() failed[%d]", cause_value);
                 ogs_assert(cause_value != OGS_PFCP_CAUSE_REQUEST_ACCEPTED);
@@ -338,7 +340,7 @@ uint8_t upf_sess_set_ue_ip(upf_sess_t *sess,
     } else if (session_type == OGS_PDU_SESSION_TYPE_IPV6) {
         if (ue_ip->ipv6 || pdr->dnn) {
             sess->ipv6 = ogs_pfcp_ue_ip_alloc(&cause_value, AF_INET6,
-                            pdr->dnn, ue_ip->addr6);
+                            pdr->dnn, ue_ip->addr6); //Assign IPv6 using UE IPv6
             if (!sess->ipv6) {
                 ogs_error("ogs_pfcp_ue_ip_alloc() failed[%d]", cause_value);
                 ogs_assert(cause_value != OGS_PFCP_CAUSE_REQUEST_ACCEPTED);
@@ -351,7 +353,7 @@ uint8_t upf_sess_set_ue_ip(upf_sess_t *sess,
                 session_type, ue_ip->ipv4, ue_ip->ipv6,
                 pdr->dnn ? pdr->dnn : "");
         }
-    } else if (session_type == OGS_PDU_SESSION_TYPE_IPV4V6) {
+    } else if (session_type == OGS_PDU_SESSION_TYPE_IPV4V6) { //Assign both
         if (ue_ip->ipv4 || pdr->dnn) {
             sess->ipv4 = ogs_pfcp_ue_ip_alloc(&cause_value, AF_INET,
                             pdr->dnn, (uint8_t *)&(ue_ip->both.addr));
@@ -394,7 +396,7 @@ uint8_t upf_sess_set_ue_ip(upf_sess_t *sess,
                 pdr->dnn ? pdr->dnn : "");
     }
 
-    ogs_info("UE F-SEID[UP:0x%lx CP:0x%lx] "
+    ogs_info("UE F-SEID[CP:0x%lx UP:0x%lx] "
              "APN[%s] PDN-Type[%d] IPv4[%s] IPv6[%s]",
         (long)sess->upf_n4_seid, (long)sess->smf_n4_f_seid.seid,
         pdr->dnn, session_type,
@@ -404,7 +406,7 @@ uint8_t upf_sess_set_ue_ip(upf_sess_t *sess,
     return cause_value;
 }
 
-void upf_sess_urr_acc_add(upf_sess_t *sess, ogs_pfcp_urr_t *urr, size_t size, bool is_uplink)
+void upf_sess_urr_acc_add(upf_sess_t *sess, ogs_pfcp_urr_t *urr, size_t size, bool is_uplink) //Add Usage Reporting Rules report (user plane traffic reporting...) to a given session
 {
     upf_sess_urr_acc_t *urr_acc = &sess->urr_acc[urr->id];
     uint64_t vol;
@@ -444,7 +446,7 @@ void upf_sess_urr_acc_add(upf_sess_t *sess, ogs_pfcp_urr_t *urr, size_t size, bo
 /* report struct must be memzeroed before first use of this function.
  * report->num_of_usage_report must be set by the caller */
 void upf_sess_urr_acc_fill_usage_report(upf_sess_t *sess, const ogs_pfcp_urr_t *urr,
-                                  ogs_pfcp_user_plane_report_t *report, unsigned int idx)
+                                  ogs_pfcp_user_plane_report_t *report, unsigned int idx) //Fills URR report
 {
     upf_sess_urr_acc_t *urr_acc = &sess->urr_acc[urr->id];
     ogs_time_t last_report_timestamp;
@@ -502,7 +504,7 @@ void upf_sess_urr_acc_fill_usage_report(upf_sess_t *sess, const ogs_pfcp_urr_t *
         report->usage_report[idx].rep_trigger.volume_threshold = 1;
 }
 
-void upf_sess_urr_acc_snapshot(upf_sess_t *sess, ogs_pfcp_urr_t *urr)
+void upf_sess_urr_acc_snapshot(upf_sess_t *sess, ogs_pfcp_urr_t *urr) //Updates URR report
 {
     upf_sess_urr_acc_t *urr_acc = &sess->urr_acc[urr->id];
     urr_acc->last_report.total_octets = urr_acc->total_octets;
@@ -514,7 +516,7 @@ void upf_sess_urr_acc_snapshot(upf_sess_t *sess, ogs_pfcp_urr_t *urr)
     urr_acc->last_report.timestamp = ogs_time_now();
 }
 
-static void upf_sess_urr_acc_timers_cb(void *data)
+static void upf_sess_urr_acc_timers_cb(void *data) //When time threshold is reached, sends URR report
 {
     ogs_pfcp_urr_t *urr = (ogs_pfcp_urr_t *)data;
     ogs_pfcp_user_plane_report_t report;
@@ -538,7 +540,7 @@ static void upf_sess_urr_acc_timers_cb(void *data)
     upf_sess_urr_acc_timers_setup(sess, urr);
 }
 
-static void upf_sess_urr_acc_validity_time_setup(upf_sess_t *sess, ogs_pfcp_urr_t *urr)
+static void upf_sess_urr_acc_validity_time_setup(upf_sess_t *sess, ogs_pfcp_urr_t *urr) //Establishes a validity time for URR of a given session
 {
     upf_sess_urr_acc_t *urr_acc = &sess->urr_acc[urr->id];
 
@@ -550,7 +552,7 @@ static void upf_sess_urr_acc_validity_time_setup(upf_sess_t *sess, ogs_pfcp_urr_
     ogs_timer_start(urr_acc->t_validity_time,
             ogs_time_from_sec(urr->quota_validity_time));
 }
-static void upf_sess_urr_acc_time_quota_setup(upf_sess_t *sess, ogs_pfcp_urr_t *urr)
+static void upf_sess_urr_acc_time_quota_setup(upf_sess_t *sess, ogs_pfcp_urr_t *urr) //Sets time quota timer to URR of a given session (Request for reporting when time quota is exhausted)
 {
     upf_sess_urr_acc_t *urr_acc = &sess->urr_acc[urr->id];
 
@@ -561,7 +563,7 @@ static void upf_sess_urr_acc_time_quota_setup(upf_sess_t *sess, ogs_pfcp_urr_t *
                                         upf_sess_urr_acc_timers_cb, urr);
     ogs_timer_start(urr_acc->t_time_quota, ogs_time_from_sec(urr->time_quota));
 }
-static void upf_sess_urr_acc_time_threshold_setup(upf_sess_t *sess, ogs_pfcp_urr_t *urr)
+static void upf_sess_urr_acc_time_threshold_setup(upf_sess_t *sess, ogs_pfcp_urr_t *urr)//Sets a time threshold timer to URR of a given session
 {
     upf_sess_urr_acc_t *urr_acc = &sess->urr_acc[urr->id];
 
@@ -574,7 +576,7 @@ static void upf_sess_urr_acc_time_threshold_setup(upf_sess_t *sess, ogs_pfcp_urr
             ogs_time_from_sec(urr->time_threshold));
 }
 
-void upf_sess_urr_acc_timers_setup(upf_sess_t *sess, ogs_pfcp_urr_t *urr)
+void upf_sess_urr_acc_timers_setup(upf_sess_t *sess, ogs_pfcp_urr_t *urr)//Initiates validity time, time quota and time threshold of URR of a given session
 {
     upf_sess_urr_acc_t *urr_acc = &sess->urr_acc[urr->id];
     urr_acc->time_start = ogs_time_ntp32_now();
@@ -586,7 +588,7 @@ void upf_sess_urr_acc_timers_setup(upf_sess_t *sess, ogs_pfcp_urr_t *urr)
         upf_sess_urr_acc_time_threshold_setup(sess, urr);
 }
 
-static void upf_sess_urr_acc_remove_all(upf_sess_t *sess)
+static void upf_sess_urr_acc_remove_all(upf_sess_t *sess)//Deletes existent validity time, time quota and time threshold of URR of a given session
 {
     unsigned int i;
     for (i = 0; i < OGS_ARRAY_SIZE(sess->urr_acc); i++) {

@@ -22,6 +22,7 @@
 static ogs_thread_t *nrf_thread = NULL;
 static ogs_thread_t *scp_thread = NULL;
 static ogs_thread_t *upf_thread = NULL;
+static ogs_thread_t *tsnaf_thread = NULL;
 static ogs_thread_t *smf_thread = NULL;
 static ogs_thread_t *amf_thread = NULL;
 static ogs_thread_t *ausf_thread = NULL;
@@ -63,7 +64,8 @@ int app_initialize(const char *const argv[])
 
     if (ogs_app()->parameter.no_amf == 0)
         amf_thread = test_child_create("amf", argv_out);
-
+    if (ogs_app()->parameter.no_tsnaf == 0)
+        tsnaf_thread = test_child_create("tsnaf", argv_out);
     if (ogs_app()->parameter.no_ausf == 0)
         ausf_thread = test_child_create("ausf", argv_out);
     if (ogs_app()->parameter.no_udm == 0)
@@ -93,7 +95,7 @@ void app_terminate(void)
 
     if (smf_thread) ogs_thread_destroy(smf_thread);
     if (upf_thread) ogs_thread_destroy(upf_thread);
-
+    if (tsnaf_thread) ogs_thread_destroy(tsnaf_thread);
     if (udr_thread) ogs_thread_destroy(udr_thread);
     if (nssf_thread) ogs_thread_destroy(nssf_thread);
     if (bsf_thread) ogs_thread_destroy(bsf_thread);

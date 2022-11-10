@@ -1,0 +1,6 @@
+[options]
+prefix = /home/marc/open5gs/install
+backend = ninja
+
+[properties]
+
