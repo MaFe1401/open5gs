@@ -27,11 +27,11 @@
 
 /**
  * Callback function for the web application on /helloworld url call
- */
+ 
 int callback_hello_world (const struct _u_request * request, struct _u_response * response, void * user_data);
 /**
  * Callback function for the web application on /config url call
- */
+ 
 int callback_config (const struct _u_request * request, struct _u_response * response, void * user_data);
 int callback_hello_world (const struct _u_request * request, struct _u_response * response, void * user_data) {
   ulfius_set_string_body_response(response, 200, "Hello World!");
@@ -46,7 +46,7 @@ int callback_config (const struct _u_request * request, struct _u_response * res
 
 /**
  * main function
- */
+ 
 int mainREST(void);
 int mainREST(void) {
   struct _u_instance instance;
@@ -77,7 +77,7 @@ int mainREST(void) {
 
   return 0;
 }
-
+*/
 int app_initialize(const char *const argv[])
 {
     int rv;
@@ -87,7 +87,7 @@ int app_initialize(const char *const argv[])
         ogs_error("Failed to intialize UPF");
         return rv;
     }
-    rv= mainREST();
+    //rv= mainREST();
     ogs_info("UPF initialize...done");
 
     return OGS_OK;
