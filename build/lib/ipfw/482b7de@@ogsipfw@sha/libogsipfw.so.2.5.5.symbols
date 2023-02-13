@@ -1,4 +1,4 @@
- 0x000000000000000e (SONAME)             Nombre-so de la biblioteca: [libogsipfw.so.2]
+ 0x000000000000000e (SONAME)             Library soname: [libogsipfw.so.2]
 add_dstip6 T 9a
 add_srcip6 T ac
 bp_alloc T 8a

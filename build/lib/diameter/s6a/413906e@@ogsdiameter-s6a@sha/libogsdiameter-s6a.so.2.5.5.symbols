@@ -1,4 +1,4 @@
- 0x000000000000000e (SONAME)             Nombre-so de la biblioteca: [libogsdiameter-s6a.so.2]
+ 0x000000000000000e (SONAME)             Library soname: [libogsdiameter-s6a.so.2]
 ogs_diam_s6a_3gpp_charging_characteristics B 8
 ogs_diam_s6a_access_restriction_data B 8
 ogs_diam_s6a_age_of_location_information B 8

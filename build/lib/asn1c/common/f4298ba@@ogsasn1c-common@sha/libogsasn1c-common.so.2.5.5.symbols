@@ -1,4 +1,4 @@
- 0x000000000000000e (SONAME)             Nombre-so de la biblioteca: [libogsasn1c-common.so.2]
+ 0x000000000000000e (SONAME)             Library soname: [libogsasn1c-common.so.2]
 ANY_decode_aper T 28c
 ANY_encode_aper T 2a8
 ANY_encode_jer T 58

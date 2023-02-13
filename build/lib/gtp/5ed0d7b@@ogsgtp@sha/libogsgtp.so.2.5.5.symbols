@@ -1,4 +1,4 @@
- 0x000000000000000e (SONAME)             Nombre-so de la biblioteca: [libogsgtp.so.2]
+ 0x000000000000000e (SONAME)             Library soname: [libogsgtp.so.2]
 ogs_gtp1_build_echo_request T 71
 ogs_gtp1_build_echo_response T b5
 ogs_gtp1_build_msg T 9c7

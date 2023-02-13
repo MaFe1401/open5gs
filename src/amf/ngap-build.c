@@ -1441,45 +1441,45 @@ ogs_pkbuf_t *ngap_sess_build_pdu_session_resource_setup_request(
 }
 
 ogs_pkbuf_t *ngap_build_pdu_session_resource_modify_request(
-    amf_sess_t *sess, ogs_pkbuf_t *gmmbuf, ogs_pkbuf_t *n2smbuf)
+    amf_sess_t *sess, ogs_pkbuf_t *gmmbuf, ogs_pkbuf_t *n2smbuf) 
 {
-    amf_ue_t *amf_ue = NULL;
-    ran_ue_t *ran_ue = NULL;
+    amf_ue_t *amf_ue = NULL; //ue from amf sess
+    ran_ue_t *ran_ue = NULL; //ue from amf context
 
-    NGAP_NGAP_PDU_t pdu;
-    NGAP_InitiatingMessage_t *initiatingMessage = NULL;
-    NGAP_PDUSessionResourceModifyRequest_t *PDUSessionResourceModifyRequest;
+    NGAP_NGAP_PDU_t pdu; //ngap pdu 
+    NGAP_InitiatingMessage_t *initiatingMessage = NULL; //Contained at ngap pdu
+    NGAP_PDUSessionResourceModifyRequest_t *PDUSessionResourceModifyRequest; //Resource modify request
 
-    NGAP_PDUSessionResourceModifyRequestIEs_t *ie = NULL;
-    NGAP_AMF_UE_NGAP_ID_t *AMF_UE_NGAP_ID = NULL;
-    NGAP_RAN_UE_NGAP_ID_t *RAN_UE_NGAP_ID = NULL;
+    NGAP_PDUSessionResourceModifyRequestIEs_t *ie = NULL; //contained at modify request
+    NGAP_AMF_UE_NGAP_ID_t *AMF_UE_NGAP_ID = NULL; //int id 
+    NGAP_RAN_UE_NGAP_ID_t *RAN_UE_NGAP_ID = NULL; //int id 
 
-    NGAP_PDUSessionResourceModifyListModReq_t *PDUSessionList = NULL;
-    NGAP_PDUSessionResourceModifyItemModReq_t *PDUSessionItem = NULL;
-    NGAP_NAS_PDU_t *nAS_PDU = NULL;
-    OCTET_STRING_t *transfer = NULL;
+    NGAP_PDUSessionResourceModifyListModReq_t *PDUSessionList = NULL; //pdu session list to modify
+    NGAP_PDUSessionResourceModifyItemModReq_t *PDUSessionItem = NULL; //items to modify
+    NGAP_NAS_PDU_t *nAS_PDU = NULL; //octet string
+    OCTET_STRING_t *transfer = NULL; //octet string
 
     ogs_assert(gmmbuf);
     ogs_assert(n2smbuf);
     ogs_assert(sess);
 
-    amf_ue = amf_ue_cycle(sess->amf_ue);
+    amf_ue = amf_ue_cycle(sess->amf_ue);//returns amf ue from amf ue pool
     ogs_assert(amf_ue);
-    ran_ue = ran_ue_cycle(amf_ue->ran_ue);
+    ran_ue = ran_ue_cycle(amf_ue->ran_ue);//returns ran ue 
     ogs_assert(ran_ue);
 
     ogs_debug("PDUSessionResourceModifyRequest");
 
-    memset(&pdu, 0, sizeof (NGAP_NGAP_PDU_t));
-    pdu.present = NGAP_NGAP_PDU_PR_initiatingMessage;
-    pdu.choice.initiatingMessage = CALLOC(1, sizeof(NGAP_InitiatingMessage_t));
+    memset(&pdu, 0, sizeof (NGAP_NGAP_PDU_t));//pdu is emptied
+    pdu.present = NGAP_NGAP_PDU_PR_initiatingMessage;//pdu is an ngap initiating message
+    pdu.choice.initiatingMessage = CALLOC(1, sizeof(NGAP_InitiatingMessage_t));//memory allocation
 
     initiatingMessage = pdu.choice.initiatingMessage;
     initiatingMessage->procedureCode =
-        NGAP_ProcedureCode_id_PDUSessionResourceModify;
-    initiatingMessage->criticality = NGAP_Criticality_reject;
+        NGAP_ProcedureCode_id_PDUSessionResourceModify; //assigns the ngap procedure code id
+    initiatingMessage->criticality = NGAP_Criticality_reject;//assigns criticality reject
     initiatingMessage->value.present =
-        NGAP_InitiatingMessage__value_PR_PDUSessionResourceModifyRequest;
+        NGAP_InitiatingMessage__value_PR_PDUSessionResourceModifyRequest;//value.present
 
     PDUSessionResourceModifyRequest =
         &initiatingMessage->value.choice.PDUSessionResourceModifyRequest;

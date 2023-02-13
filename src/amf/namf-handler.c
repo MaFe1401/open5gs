@@ -190,6 +190,8 @@ int amf_namf_comm_handle_n1_n2_message_transfer(
                 ngapbuf = ngap_sess_build_pdu_session_resource_setup_request(
                         sess, gmmbuf, n2buf);
                 ogs_assert(ngapbuf);
+                ogs_warn("PDU SESSION RESOURCE SETUP REQUEST SENT");
+                
             } else {
                 ngapbuf = ngap_sess_build_initial_context_setup_request(
                         sess, gmmbuf, n2buf);
@@ -212,7 +214,7 @@ int amf_namf_comm_handle_n1_n2_message_transfer(
             } else {
                 sess->pdu_session_establishment_accept = ngapbuf;
             }
-
+           
         } else {
             /*********************************************
              * 4.2.3.3 Network Triggered Service Request *

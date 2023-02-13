@@ -1,4 +1,4 @@
- 0x000000000000000e (SONAME)             Nombre-so de la biblioteca: [libogsdbi.so.2]
+ 0x000000000000000e (SONAME)             Library soname: [libogsdbi.so.2]
 ogs_dbi_auth_info T 836
 ogs_dbi_collection_watch_init T 295
 __ogs_dbi_domain B 4

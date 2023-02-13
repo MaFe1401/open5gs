@@ -1,4 +1,4 @@
- 0x000000000000000e (SONAME)             Nombre-so de la biblioteca: [libogsdiameter-cx.so.2]
+ 0x000000000000000e (SONAME)             Library soname: [libogsdiameter-cx.so.2]
 ogs_diam_cx_application B 8
 ogs_diam_cx_charging_information B 8
 ogs_diam_cx_cmd_lia B 8

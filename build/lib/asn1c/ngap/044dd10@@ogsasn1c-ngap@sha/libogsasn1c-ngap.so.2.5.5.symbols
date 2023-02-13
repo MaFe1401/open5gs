@@ -1,4 +1,4 @@
- 0x000000000000000e (SONAME)             Nombre-so de la biblioteca: [libogsasn1c-ngap.so.2]
+ 0x000000000000000e (SONAME)             Library soname: [libogsasn1c-ngap.so.2]
 asn_DEF_NGAP_AdditionalDLUPTNLInformationForHOItem D 60
 asn_DEF_NGAP_AdditionalDLUPTNLInformationForHOItem_ExtIEs D 60
 asn_DEF_NGAP_AdditionalDLUPTNLInformationForHOList D 60

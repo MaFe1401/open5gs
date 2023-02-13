@@ -1,4 +1,4 @@
- 0x000000000000000e (SONAME)             Nombre-so de la biblioteca: [libogsasn1c-util.so.2]
+ 0x000000000000000e (SONAME)             Library soname: [libogsasn1c-util.so.2]
 ogs_asn_BIT_STRING_to_ip T 3d3
 ogs_asn_BIT_STRING_to_uint32 T 10c
 ogs_asn_buffer_to_BIT_STRING T 74

@@ -1,4 +1,4 @@
- 0x000000000000000e (SONAME)             Nombre-so de la biblioteca: [libogscore.so.2]
+ 0x000000000000000e (SONAME)             Library soname: [libogscore.so.2]
 abts_add_suite T 25f
 abts_assert T 82
 abts_fail T 76

@@ -1,4 +1,4 @@
- 0x000000000000000e (SONAME)             Nombre-so de la biblioteca: [libogsnas-common.so.2]
+ 0x000000000000000e (SONAME)             Library soname: [libogsnas-common.so.2]
 apn_ambr_build T fa
 eps_qos_build T 201
 ogs_nas_bitrate_from_uint64 T 12f

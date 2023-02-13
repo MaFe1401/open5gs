@@ -1,4 +1,4 @@
- 0x000000000000000e (SONAME)             Nombre-so de la biblioteca: [libogsdiameter-gy.so.2]
+ 0x000000000000000e (SONAME)             Library soname: [libogsdiameter-gy.so.2]
 ogs_diam_gy_3gpp_charging_characteristics B 8
 ogs_diam_gy_3gpp_charging_id B 8
 ogs_diam_gy_3gpp_ms_timezone B 8

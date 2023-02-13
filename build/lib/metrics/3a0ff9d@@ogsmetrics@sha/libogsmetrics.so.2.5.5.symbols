@@ -1,4 +1,4 @@
- 0x000000000000000e (SONAME)             Nombre-so de la biblioteca: [libogsmetrics.so.2]
+ 0x000000000000000e (SONAME)             Library soname: [libogsmetrics.so.2]
 ogs_metrics_context_close T f
 ogs_metrics_context_final T 7f
 ogs_metrics_context_init T 9e

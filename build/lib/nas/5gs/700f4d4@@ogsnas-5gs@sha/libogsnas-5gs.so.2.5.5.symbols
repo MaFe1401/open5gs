@@ -1,4 +1,4 @@
- 0x000000000000000e (SONAME)             Nombre-so de la biblioteca: [libogsnas-5gs.so.2]
+ 0x000000000000000e (SONAME)             Library soname: [libogsnas-5gs.so.2]
 ogs_nas_5gmm_decode T e0e
 ogs_nas_5gmm_encode T 1034
 ogs_nas_5gs_decode_5gmm_capability T 164
@@ -194,7 +194,7 @@ ogs_nas_5gs_encode_daylight_saving_time T 16c
 ogs_nas_5gs_encode_deregistration_request_from_ue T 17c
 ogs_nas_5gs_encode_deregistration_request_to_ue T 444
 ogs_nas_5gs_encode_de_registration_type T 171
-ogs_nas_5gs_encode_dl_nas_transport T 5ea
+ogs_nas_5gs_encode_dl_nas_transport T 62b
 ogs_nas_5gs_encode_dnn T 241
 ogs_nas_5gs_encode_ds_tt_ethernet_port_mac_address T 179
 ogs_nas_5gs_encode_eap_message T 301

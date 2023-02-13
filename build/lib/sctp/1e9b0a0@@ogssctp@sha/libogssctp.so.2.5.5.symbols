@@ -1,4 +1,4 @@
- 0x000000000000000e (SONAME)             Nombre-so de la biblioteca: [libogssctp.so.2]
+ 0x000000000000000e (SONAME)             Library soname: [libogssctp.so.2]
 ogs_sctp_client T 5f4
 ogs_sctp_connect T 1e6
 __ogs_sctp_domain B 4

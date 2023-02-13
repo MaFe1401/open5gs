@@ -1,4 +1,4 @@
- 0x000000000000000e (SONAME)             Nombre-so de la biblioteca: [libogssbi-openapi.so.2]
+ 0x000000000000000e (SONAME)             Library soname: [libogssbi-openapi.so.2]
 cJSON_AddArrayToObject T 5b
 cJSON_AddBoolToObject T 63
 cJSON_AddFalseToObject T 5b

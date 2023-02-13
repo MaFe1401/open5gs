@@ -27,7 +27,7 @@ int ngap_handle_pdu_session_resource_setup_response_transfer(
 {
     smf_ue_t *smf_ue = NULL;
     int rv, i;
-
+    ogs_warn("received pdu session resource setup response 2");
     uint32_t gnb_n3_teid;
     ogs_ip_t gnb_n3_ip;
 

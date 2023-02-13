@@ -1,4 +1,4 @@
- 0x000000000000000e (SONAME)             Nombre-so de la biblioteca: [libogsngap.so.2]
+ 0x000000000000000e (SONAME)             Library soname: [libogsngap.so.2]
 ogs_ngap_5gs_tai_to_ASN T 129
 ogs_ngap_AMFPointer_to_uint8 T 16e
 ogs_ngap_AMFRegionID_to_uint8 T 169

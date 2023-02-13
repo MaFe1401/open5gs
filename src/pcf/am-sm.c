@@ -118,6 +118,7 @@ void pcf_am_state_operational(ogs_fsm_t *s, pcf_event_t *e)
                     }
 
                     pcf_nudr_dr_handle_query_am_data(pcf_ue, stream, message);
+                    ogs_warn("Registration ongoing");
                     break;
 
                 DEFAULT

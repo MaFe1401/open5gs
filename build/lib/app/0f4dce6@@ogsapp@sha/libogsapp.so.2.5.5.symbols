@@ -1,4 +1,4 @@
- 0x000000000000000e (SONAME)             Nombre-so de la biblioteca: [libogsapp.so.2]
+ 0x000000000000000e (SONAME)             Library soname: [libogsapp.so.2]
 ogs_app T 11
 ogs_app_config_parse_sockopt T 891
 ogs_app_config_read T 703

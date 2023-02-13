@@ -1482,7 +1482,7 @@ void ngap_handle_pdu_session_resource_setup_response(
 {
     char buf[OGS_ADDRSTRLEN];
     int i;
-
+    ogs_warn("received pdu session resource setup response 3");
     amf_ue_t *amf_ue = NULL;
     ran_ue_t *ran_ue = NULL;
     uint64_t amf_ue_ngap_id;
@@ -1765,7 +1765,7 @@ void ngap_handle_pdu_session_resource_setup_response(
             ogs_assert(param.n2smbuf);
             param.n2SmInfoType = OpenAPI_n2_sm_info_type_PDU_RES_SETUP_FAIL;
             ogs_pkbuf_put_data(param.n2smbuf, transfer->buf, transfer->size);
-
+            
             amf_ue->deactivation.group = NGAP_Cause_PR_nas;
             amf_ue->deactivation.cause = NGAP_CauseNas_normal_release;
 

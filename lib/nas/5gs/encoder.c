@@ -1786,7 +1786,7 @@ int ogs_nas_5gs_encode_dl_nas_transport(ogs_pkbuf_t *pkbuf, ogs_nas_5gs_message_
     ogs_nas_5gs_dl_nas_transport_t *dl_nas_transport = &message->gmm.dl_nas_transport;
     int encoded = 0;
     int size = 0;
-
+    ogs_warn("ENCODING DL NAS TRANSPORTTT");
     ogs_trace("[NAS] Encode DL_NAS_TRANSPORT");
 
     size = ogs_nas_5gs_encode_payload_container_type(pkbuf, &dl_nas_transport->payload_container_type);

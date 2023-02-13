@@ -1,4 +1,4 @@
- 0x000000000000000e (SONAME)             Nombre-so de la biblioteca: [libogss1ap.so.2]
+ 0x000000000000000e (SONAME)             Library soname: [libogss1ap.so.2]
 ogs_s1ap_buffer_to_OCTET_STRING T 67
 ogs_s1ap_build_error_indication T 373
 ogs_s1ap_build_part_of_s1_interface T 351

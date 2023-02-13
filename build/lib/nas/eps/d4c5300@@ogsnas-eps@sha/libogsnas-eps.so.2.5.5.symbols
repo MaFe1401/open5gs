@@ -1,4 +1,4 @@
- 0x000000000000000e (SONAME)             Nombre-so de la biblioteca: [libogsnas-eps.so.2]
+ 0x000000000000000e (SONAME)             Library soname: [libogsnas-eps.so.2]
 ogs_nas_emm_decode T f91
 ogs_nas_emm_encode T 11ce
 ogs_nas_eps_decode_access_point_name T 269

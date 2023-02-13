@@ -1,4 +1,4 @@
- 0x000000000000000e (SONAME)             Nombre-so de la biblioteca: [libfdcore.so.7]
+ 0x000000000000000e (SONAME)             Library soname: [libfdcore.so.7]
 cleanup_setstate T 207
 current_nested_level B 4
 determine_sctp_sockopt_event_subscribe_size T 202

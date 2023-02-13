@@ -1,11 +1,11 @@
- 0x000000000000000e (SONAME)             Nombre-so de la biblioteca: [libogspfcp.so.2]
+ 0x000000000000000e (SONAME)             Library soname: [libogspfcp.so.2]
 ogs_pfcp_bar_delete T 29c
 ogs_pfcp_bar_new T 44c
 ogs_pfcp_build_bitrate T 29e
 ogs_pfcp_build_create_bar T 109
 ogs_pfcp_build_created_pdr T 1fc
 ogs_pfcp_build_create_far T 3df
-ogs_pfcp_build_create_pdr T 966
+ogs_pfcp_build_create_pdr T 961
 ogs_pfcp_build_create_qer T 219
 ogs_pfcp_build_create_urr T 3e2
 ogs_pfcp_build_dropped_dl_traffic_threshold T 31c

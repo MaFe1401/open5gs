@@ -325,7 +325,7 @@ void ogs_pfcp_build_create_pdr(
 
     if (pdr->qfi) {
         message->pdi.qfi.presence = 1;
-        message->pdi.qfi.u8 = pdr->qfi;
+        message->pdi.qfi.u8 = (uint8_t)i+1;
     }
 
     if (pdr->outer_header_removal_len) {

@@ -1,4 +1,4 @@
- 0x000000000000000e (SONAME)             Nombre-so de la biblioteca: [libogssbi.so.2]
+ 0x000000000000000e (SONAME)             Library soname: [libogssbi.so.2]
 multipart_parser_execute T 869
 multipart_parser_free T 1f
 multipart_parser_get_data T 15

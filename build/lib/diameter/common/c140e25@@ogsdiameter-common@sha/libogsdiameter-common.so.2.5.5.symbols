@@ -1,4 +1,4 @@
- 0x000000000000000e (SONAME)             Nombre-so de la biblioteca: [libogsdiameter-common.so.2]
+ 0x000000000000000e (SONAME)             Library soname: [libogsdiameter-common.so.2]
 fd_avp_search_avp T 5a2
 ogs_diam_app_connected T 40b
 ogs_diam_auth_application_id B 8

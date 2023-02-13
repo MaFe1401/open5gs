@@ -1,4 +1,4 @@
- 0x000000000000000e (SONAME)             Nombre-so de la biblioteca: [libogsproto.so.2]
+ 0x000000000000000e (SONAME)             Library soname: [libogsproto.so.2]
 ogs_amf_id_build T 79
 ogs_amf_id_from_string T 179
 ogs_amf_id_hexdump T c0

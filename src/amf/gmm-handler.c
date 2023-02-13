@@ -107,13 +107,13 @@ ogs_nas_5gmm_cause_t gmm_handle_registration_request(amf_ue_t *amf_ue,
         OGS_NAS_5GS_REGISTRATION_REQUEST_EPS_NAS_MESSAGE_CONTAINER_PRESENT| \
         OGS_NAS_5GS_REGISTRATION_REQUEST_NAS_MESSAGE_CONTAINER_PRESENT)
 
-    if (ngap_code == NGAP_ProcedureCode_id_InitialUEMessage &&
+   /* if (ngap_code == NGAP_ProcedureCode_id_InitialUEMessage &&
         registration_request->presencemask &
         ~OGS_REGISTRATION_CLEARTEXT_PRESENT) {
         ogs_error("Non cleartext IEs is included [0x%llx]",
                 (long long)registration_request->presencemask);
         return OGS_5GMM_CAUSE_SEMANTICALLY_INCORRECT_MESSAGE;
-    }
+    }*/
 
     if (!h.integrity_protected &&
         (registration_request->presencemask &
@@ -458,13 +458,13 @@ ogs_nas_5gmm_cause_t gmm_handle_service_request(amf_ue_t *amf_ue,
      */
 #define OGS_SERVICE_CLEARTEXT_PRESENT \
         (OGS_NAS_5GS_SERVICE_REQUEST_NAS_MESSAGE_CONTAINER_PRESENT)
-
+/*
     if (ngap_code == NGAP_ProcedureCode_id_InitialUEMessage &&
         service_request->presencemask & ~OGS_SERVICE_CLEARTEXT_PRESENT) {
         ogs_error("Non cleartext IEs is included [0x%llx]",
                 (long long)service_request->presencemask);
         return OGS_5GMM_CAUSE_SEMANTICALLY_INCORRECT_MESSAGE;
-    }
+    }*/
 
     if (!h.integrity_protected &&
         (service_request->presencemask &

@@ -1,4 +1,4 @@
- 0x000000000000000e (SONAME)             Nombre-so de la biblioteca: [libogsdiameter-rx.so.2]
+ 0x000000000000000e (SONAME)             Library soname: [libogsdiameter-rx.so.2]
 ogs_diam_rx_abort_cause B 8
 ogs_diam_rx_af_application_identifier B 8
 ogs_diam_rx_application B 8

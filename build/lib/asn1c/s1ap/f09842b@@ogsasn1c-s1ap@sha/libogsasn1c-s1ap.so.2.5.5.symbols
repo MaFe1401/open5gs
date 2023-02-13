@@ -1,4 +1,4 @@
- 0x000000000000000e (SONAME)             Nombre-so de la biblioteca: [libogsasn1c-s1ap.so.2]
+ 0x000000000000000e (SONAME)             Library soname: [libogsasn1c-s1ap.so.2]
 asn_DEF_S1AP_AdditionalCSFallbackIndicator D 60
 asn_DEF_S1AP_Additional_GUTI D 60
 asn_DEF_S1AP_Additional_GUTI_ExtIEs D 60

@@ -1036,6 +1036,8 @@ void smf_gsm_state_operational(ogs_fsm_t *s, smf_event_t *e)
         case OpenAPI_n2_sm_info_type_PDU_RES_SETUP_RSP:
             rv = ngap_handle_pdu_session_resource_setup_response_transfer(
                     sess, stream, pkbuf);
+            ogs_warn("received pdu session resource setup response");
+            
             if (rv != OGS_OK) {
                 ogs_error("[%s:%d] Cannot handle NGAP message",
                         smf_ue->supi, sess->psi);

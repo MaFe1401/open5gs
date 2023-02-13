@@ -1,4 +1,4 @@
- 0x000000000000000e (SONAME)             Nombre-so de la biblioteca: [libogscrypt.so.2]
+ 0x000000000000000e (SONAME)             Library soname: [libogscrypt.so.2]
 AddM T 2d
 BitReorganization T 7e
 ClockFSM T 72

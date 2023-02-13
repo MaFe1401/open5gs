@@ -1,4 +1,4 @@
- 0x000000000000000e (SONAME)             Nombre-so de la biblioteca: [libfdproto.so.7]
+ 0x000000000000000e (SONAME)             Library soname: [libfdproto.so.7]
 fd_breakhere T 28
 fd_breaks B 4
 fd_debug_one_file B 8
